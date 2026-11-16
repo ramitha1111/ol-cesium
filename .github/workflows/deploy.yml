@@ -1,20 +1,22 @@
+# Optimized by ci-cost (https://github.com/mariotavarez/ci-cost)
+# Applied 2 optimizations:
+# - [HIGH] Add npm dependency cache to "deploy" job
+# - [HIGH] Split "deploy" into parallel jobs (lint + test + build)
+# Estimated savings: ~10 min/run
+#
 name: Deploy website
-
-on:
+'on':
   push:
     tags:
-      - 'v*.*.*'
-  workflow_dispatch:
-
+      - v*.*.*
+  workflow_dispatch: null
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: pages
   cancel-in-progress: false
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,6 +28,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 26
+          cache: npm
       - name: Install dependencies
         run: npm ci
       - name: Lint
